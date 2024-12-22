@@ -1,0 +1,14 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button>
+    <mat-icon>checkroom</mat-icon>
+  </button>
+  <h2><strong>LuceModa</strong></h2>
+  <span class="spacer"></span>
+  <button mat-button routerLink="/">Inicio</button>
+  <button mat-button routerLink="/products">Productos</button>
+  <button mat-button routerLink="/cart">
+    <mat-icon>shopping_cart</mat-icon>
+    
+    <mat-badge [hidden]="cartCount === 0" [matBadge]="cartCount" matBadgeColor="warn" matBadgePosition="below before" matBadgeSize="small"></mat-badge>
+  </button>
+</mat-toolbar>

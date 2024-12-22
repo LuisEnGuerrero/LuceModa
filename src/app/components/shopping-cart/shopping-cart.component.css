@@ -1,0 +1,21 @@
+.cart-container {
+    margin: 20px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.cart-summary {
+    text-align: right;
+    margin-top: 20px;
+}

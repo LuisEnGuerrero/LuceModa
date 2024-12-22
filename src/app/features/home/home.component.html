@@ -1,0 +1,56 @@
+<div class="home-container">
+  <h1>Servicio de Caja</h1>
+  <h3>y Gestión de Clientes</h3>
+
+  <!-- Formulario de búsqueda -->
+  <form [formGroup]="searchForm" (ngSubmit)="searchClient()" class="search-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Tipo de Documento</mat-label>
+      <mat-select formControlName="tipoDocumento" required>
+        <mat-option *ngFor="let type of documentTypes" [value]="type.codigo">
+          {{ type.descripcion }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Número de Documento</mat-label>
+      <input matInput formControlName="numeroDocumento" required />
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="searchForm.invalid">
+      Buscar Cliente
+    </button>
+  </form>
+
+  <!-- Resultado de la búsqueda -->
+  <div *ngIf="searchPerformed" class="client-info">
+    <h2>Información del Cliente</h2>
+    <div *ngIf="cliente; else noClient">
+      <p><strong>Nombre:</strong> {{ cliente.nombre }}</p>
+      <p><strong>Apellido:</strong> {{ cliente.apellido }}</p>
+      <p><strong>Correo:</strong> {{ cliente.correo }}</p>
+      <p><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+      <button mat-raised-button color="accent" (click)="selectProducts()">
+        Seleccionar Productos
+      </button>
+    </div>
+    <ng-template #noClient>
+      <p>Cliente no encontrado. Registra al cliente para continuar.</p>
+      <button mat-raised-button color="warn" (click)="navigateToNewClient()">
+        Registrar Cliente
+      </button>
+    </ng-template>
+  </div>
+
+  <!-- Botones de funciones adicionales -->
+  <div class="action-buttons">
+    <button mat-raised-button color="accent" (click)="exportClients()">
+      Exportar Clientes
+    </button>
+    <button mat-raised-button color="primary" (click)="generateReport()">
+      Reporte de Fidelización
+      <mat-badge [hidden]="clientsToReward === 0" [matBadge]="clientsToReward" matBadgeColor="accent"></mat-badge>
+    </button>
+  </div>
+</div>

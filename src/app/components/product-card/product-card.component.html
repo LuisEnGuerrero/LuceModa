@@ -1,0 +1,25 @@
+<mat-card>
+  <img mat-card-image [src]="product.imagen_url" alt="{{ product.nombre }}" class="product-image" />
+  <mat-card-title>{{ product.nombre }}</mat-card-title>
+  <mat-card-content>
+    <p>{{ product.descripcion }}</p>
+    <p><strong>Precio:</strong> {{ product.precio | currency }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-icon-button color="primary" (click)="addToCart()" aria-label="Agregar al carrito">
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
+    <button mat-icon-button color="accent" [routerLink]="['/products', product.id, 'edit']" aria-label="Editar producto">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <!-- Tooltip para Detalles -->
+    <button
+      mat-icon-button
+      matTooltip="{{product.nombre}}: {{ product.descripcion }}, Talla: {{ product.talla }}, Color: {{ product.color }}"
+      matTooltipPosition="above"
+      aria-label="Ver detalles">
+      <mat-icon>info</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>
+

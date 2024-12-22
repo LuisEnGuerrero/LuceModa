@@ -1,0 +1,46 @@
+.home-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.search-form {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.client-info {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.client-info p {
+  margin: 5px 0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+mat-form-field {
+  flex: 1 1 calc(50% - 16px);
+}
+
+mat-badge {
+  margin-left: 8px;
+}
+
+button {
+  font-size: 16px;
+}
+
+section {
+  margin-top: 24px;
+}

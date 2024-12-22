@@ -1,0 +1,33 @@
+.client-form-card {
+    max-width: 600px;
+    margin: auto;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-field {
+    flex: 1;
+    width: 100%;    
+}
+
+.form-actions {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    width: auto;
+    gap: 16px;
+}
+
+.form-item {
+    width: 100%;
+}

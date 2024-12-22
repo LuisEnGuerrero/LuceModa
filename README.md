@@ -1,5 +1,280 @@
 # LuceModa
 
+## Aplicación Web Angular - PWA
+- Desarrollada por **LuisEnGuerrero.Co**
+
+### Descripción del Proyecto
+
+**Objetivo principal del proyecto:**
+La empresa Rios del Desierto SAS necesita implementar una herramienta para el equipo de SAC que permita consultar la información de un cliente ingresando únicamente su número de documento. Esto tiene como objetivo minimizar los tiempos en las llamadas de soporte y fidelizar a los mejores clientes.
+
+**Descripción general del proyecto:**
+1. Aplicación web Angular que gestiona los datos básicos del cliente (Tipo de documento, Número de documento, Nombre, Apellido, Correo, Teléfono), CRUD de productos de tienda de moda y modelo con las compras asociadas a cada cliente. Pensada para el apoyo a caja en las tiendas.
+2. La página de inicio presenta un input para ingresar y buscar a los usuarios. Si no existen en el registro, se los crea.
+3. Consume una API desarrollada con FastAPI y Flask que consulta por número de documento la información del cliente en una tabla que está en SQLite.
+4. El resultado de la consulta muestra en pantalla la información del cliente y tiene la opción de exportarla en formato .csv.
+5. Una vez el cliente es encontrado, se procede a generar su orden de compra y se cierra la venta, registrando todo en la base de datos de SQLite mediante petición HTTP a la API del Backend. Se genera una factura para el cliente.
+6. Finalmente, un botón genera un reporte en Excel con los datos básicos del cliente y el monto total de las compras del cliente en el último mes, para fidelizar a los clientes que superen un monto de compras de 5’000.000 de pesos COP.
+
+### Arquitectura del Proyecto
+
+**Estructura de carpetas y archivos principales:**
+
+- **index.html**: Archivo principal de la aplicación web.
+- **main.ts**: Punto de entrada principal de la aplicación Angular.
+- **manifest.webmanifest**: Archivo de configuración para PWA.
+- **styles.css**: Archivo de estilos globales.
+- **app/**: Carpeta principal de la aplicación Angular que contiene los componentes, servicios, modelos y configuraciones.
+  - **components/**: Contiene los componentes reutilizables de la aplicación como navbar, footer, etc.
+  - **environments/**: Configuraciones de entorno para desarrollo y producción.
+  - **features/**: Contiene los componentes principales que realizan las funcionalidades de la aplicación.
+  - **models/**: Define los modelos de datos utilizados en la aplicación.
+  - **services/**: Contiene los servicios que manejan la lógica del negocio y las interacciones con la API.
+  - **shared/**: Contiene módulos compartidos como Angular Material.
+- **assets/**: Carpeta que contiene los recursos estáticos como iconos e imágenes.
+
+```
+|   index.html
+|   main.ts
+|   manifest.webmanifest
+|   styles.css
+|   
++---app
+|   |   app.component.css
+|   |   
+
+app.component.html
+
+
+|   |   app.component.ts
+|   |   app.config.ts
+|   |   app.routes.ts
+|   |   
+|   +---components
+|   |   +---cart-sidebar
+|   |   |       cart-sidebar.component.css
+|   |   |       cart-sidebar.component.html
+|   |   |       cart-sidebar.component.ts
+|   |   |       
+|   |   +---dialog
+|   |   |       dialog.component.css
+|   |   |       dialog.component.html
+|   |   |       dialog.component.ts
+|   |   |       
+|   |   +---footer
+|   |   |       footer.component.css
+|   |   |       footer.component.html
+|   |   |       footer.component.ts
+|   |   |       
+|   |   +---navbar
+|   |   |       navbar.component.css
+|   |   |       navbar.component.html
+|   |   |       navbar.component.ts
+|   |   |       
+|   |   +---product-card
+|   |   |       product-card.component.css
+|   |   |       product-card.component.html
+|   |   |       product-card.component.ts
+|   |   |       
+|   |   +---product-list
+|   |   \---shopping-cart
+|   |           shopping-cart.component.css
+|   |           shopping-cart.component.html
+|   |           shopping-cart.component.ts
+|   |           
+|   +---environments
+|   |       environment.prod.ts
+|   |       
+|   +---features
+|   |   +---client
+|   |   |       client-form.component.css
+|   |   |       client-form.component.html
+|   |   |       client-form.component.ts
+|   |   |       
+|   |   +---home
+|   |   |       home.component.css
+|   |   |       home.component.html
+|   |   |       home.component.ts
+|   |   |       
+|   |   \---product
+|   |           product-form.component.css
+|   |           product-form.component.html
+|   |           product-form.component.ts
+|   |           product-list.component.css
+|   |           product-list.component.html
+|   |           product-list.component.ts
+|   |           
+|   +---models
+|   |       product.model.ts
+|   |       
+|   +---services
+|   |       api.service.ts
+|   |       cart.service.ts
+|   |       clients.service.ts
+|   |       products.service.ts
+|   |       
+|   \---shared
+|           material-modules.ts
+|           
+\---assets
+    \---icons
+            icon-128x128.png
+            icon-144x144.png
+            icon-152x152.png
+            icon-192x192.png
+            icon-384x384.png
+            icon-512x512.png
+            icon-72x72.png
+            icon-96x96.png
+```
+
+**Descripción de los componentes principales:**
+
+- **Components**: Herramientas que dan forma a la aplicación web.
+- **Environments**: Configuraciones para la puesta en marcha del servicio PWA en producción.
+- **Features**: Componentes que realizan todas las funcionalidades de la aplicación:
+  - **Client**: Gestión del CRUD de los clientes de la empresa.
+  - **Home**: Página principal e inicial de la aplicación.
+  - **Product**: Componente que gestiona el inventario y CRUD de productos.
+- **Services**: Lógica del negocio.
+- **Shared**: Gestión del diseño y estilos mediante Angular Material.
+
+### Tecnologías Utilizadas
+
+#### **Dependencias:**
+- **Angular**: Framework principal para el desarrollo de la aplicación.
+- **Angular Material**: Biblioteca de componentes UI para Angular.
+- **jsPDF**: Biblioteca para generar archivos PDF.
+- **QRCode**: Biblioteca para generar códigos QR.
+- **RxJS**: Biblioteca para programación reactiva.
+- **Zone.js**: Biblioteca para manejo de contexto asincrónico en Angular.
+
+
+- `@angular/animations`: ^18.2.0
+- `@angular/cdk`: ^17.0.0
+- `@angular/common`: ^18.2.0
+- `@angular/compiler`: ^18.2.0
+- `@angular/core`: ^18.2.0
+- `@angular/forms`: ^18.2.0
+- `@angular/material`: ^17.0.0
+- `@angular/platform-browser`: ^18.2.0
+- `@angular/platform-browser-dynamic`: ^18.2.0
+- `@angular/pwa`: ^0.5.3
+- `@angular/router`: ^18.2.0
+- `jspdf`: ^2.5.2
+- `qrcode`: ^1.5.4
+- `rxjs`: ~7.8.0
+- `tslib`: ^2.3.0
+- `zone.js`: ~0.14.10
+
+### **DevDependencies:**
+- **Angular CLI:** Herramienta de línea de comandos para Angular.
+- **TypeScript:** Lenguaje de programación utilizado para desarrollar la aplicación.
+- **Karma:** Herramienta de pruebas para JavaScript.
+- **Jasmine:** Framework de pruebas para JavaScript.
+
+- `@angular-devkit/build-angular`: ^18.2.2
+- `@angular/cli`: ^18.2.2
+- `@angular/compiler-cli`: ^18.2.0
+- `@types/jasmine`: ~5.1.0
+- `@types/qrcode`: ^1.5.5
+- `jasmine-core`: ~5.2.0
+- `karma`: ~6.4.0
+- `karma-chrome-launcher`: ~3.2.0
+- `karma-coverage`: ~2.2.0
+- `karma-jasmine`: ~5.1.0
+- `karma-jasmine-html-reporter`: ~2.1.0
+- `typescript`: ~5.5.2
+
+### Lógica del Proyecto
+
+**Descripción de la lógica principal del proyecto:**
+Aplicación desarrollada en Angular con soporte PWA, para la gestión de Caja y Clientes de la empresa LuceModa del consorcio empresarial Rios del Desierto SAS. La aplicación busca hacer una gestión rápida y sencilla de los clientes y poder tener la información clara para fidelizar a los más fieles. Se apoya de la conexión a una API desarrollada con FastAPI y Flask llamada SAC Optimizer, mediante endpoints HTTP.
+
+**Funcionalidades clave:**
+- La página de inicio presenta un input para ingresar y buscar a los usuarios. Si no existen en el registro, se los crea.
+- Tiene un formulario inicial con los campos: Tipo de documento (NIT, Cédula, Pasaporte), Número de documento, y un botón buscar.
+- Consulta por número de documento la información del cliente y muestra en pantalla la información del cliente con opción de exportar el registro en formato .csv.
+- Genera una orden de compra y cierra la venta, registrando todo en la base de datos de SQLite mediante petición HTTP a la API del Backend. Genera una factura para el cliente.
+- Un botón genera un reporte en Excel con los datos básicos del cliente y el monto total de las compras del cliente en el último mes, para fidelizar a los clientes que superen un monto de compras de 5’000.000 de pesos COP.
+- Gestión de productos para tener un registro de ventas.
+
+### Guía de Implementación
+
+**Pasos para configurar el proyecto en un entorno de desarrollo:**
+1. Clonar el repositorio:
+   ```sh
+   git clone <URL_DEL_REPOSITORIO>
+   cd luce-moda
+   ```
+
+2. Instalar las dependencias:
+   ```sh
+   npm install
+   ```
+
+3. Ejecutar el proyecto en modo desarrollo:
+   ```sh
+   ng serve
+   ```
+
+**Pasos para desplegar el proyecto en un entorno de producción:**
+1. Compilar el proyecto:
+   ```sh
+   ng build --configuration production
+   ```
+
+2. Subir los archivos compilados a un servidor web o servicio de hosting (por ejemplo, Netlify o Firebase).
+
+3. Configurar el servidor para servir el archivo `index.html` en todas las rutas.
+
+
+### Dependencias y Paquetes
+
+**Lista de dependencias y paquetes utilizados en el proyecto:**
+
+- **Angular**: Framework principal para el desarrollo de la aplicación.
+- **Angular Material**: Biblioteca de componentes UI para Angular.
+- **jsPDF**: Biblioteca para generar archivos PDF.
+- **QRCode**: Biblioteca para generar códigos QR.
+- **RxJS**: Biblioteca para programación reactiva.
+- **Zone.js**: Biblioteca para manejo de contexto asincrónico en Angular.
+- **Angular CLI**: Herramienta de línea de comandos para Angular.
+- **TypeScript**: Lenguaje de programación utilizado para desarrollar la aplicación.
+- **Karma**: Herramienta de pruebas para JavaScript.
+- **Jasmine**: Framework de pruebas para JavaScript.
+
+### Configuración del Proyecto Angular
+
+**angular.json:**
+Este archivo contiene la configuración del proyecto Angular, incluyendo las opciones de compilación, los activos, los estilos y los scripts. Es crucial para definir cómo se construye y sirve la aplicación.
+
+### Configuración de Módulos y Rutas
+
+**app.config.ts:**
+Define los proveedores y configuraciones principales de la aplicación, incluyendo la configuración del router y el cliente HTTP.
+
+**app.routes.ts:**
+Define las rutas de la aplicación, mapeando las URL a los componentes correspondientes.
+
+### Componente Principal
+
+**app.component.ts:**
+El componente principal de la aplicación que actúa como contenedor para otros componentes y define la estructura básica de la aplicación.
+
+**app.component.html:**
+La plantilla HTML del componente principal que incluye el navbar, el router outlet y el footer.
+
+### Registro del Service Worker
+
+**main.ts:**
+El punto de entrada principal de la aplicación que también maneja el registro del Service Worker para habilitar las capacidades PWA en producción.
+
+
+
+
+# LuceModa
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.2.
 
 ## Development server

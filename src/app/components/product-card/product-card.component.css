@@ -1,0 +1,17 @@
+mat-card {
+    margin: 10px;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Escala y recorta la imagen para que encaje */
+    max-height: 200px; /* Limita la altura máxima para uniformidad */
+    border-radius: 4px; /* Redondea los bordes de la imagen para mayor estética */
+  }
+  
