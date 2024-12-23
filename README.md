@@ -271,6 +271,304 @@ La plantilla HTML del componente principal que incluye el navbar, el router outl
 El punto de entrada principal de la aplicación que también maneja el registro del Service Worker para habilitar las capacidades PWA en producción.
 
 
+# Guía de Construcción del Proyecto LuceModa
+
+Esta guía detalla los pasos necesarios para construir el proyecto LuceModa de forma correcta, incluyendo la configuración de dependencias y la resolución de posibles problemas.
+
+## Requisitos Previos
+
+Asegúrate de tener instalados los siguientes requisitos previos:
+
+- Node.js (versión 14 o superior)
+- Angular CLI (versión 12 o superior)
+
+## Pasos para Construir el Proyecto
+
+### 1. Clonar el Repositorio
+
+Clona el repositorio del proyecto desde GitHub:
+
+```sh
+git clone https://github.com/LuisEnGuerrero/LuceModa.git
+cd LuceModa
+```
+
+### 2. Instalar Dependencias
+
+Instala las dependencias del proyecto utilizando npm:
+
+```sh
+npm install
+```
+
+### 3. Configurar los Archivos de Entorno
+
+Asegúrate de que los archivos de entorno estén presentes en la carpeta:
+
+**src/environments**
+
+
+#### environment.ts
+
+
+```typescript
+export const environment = {
+  production: false,
+  // otras configuraciones específicas para desarrollo
+};
+```
+
+#### environment.prod.ts
+
+
+```typescript
+export const environment = {
+  production: true,
+  // otras configuraciones específicas para producción
+};
+```
+
+### 4. Configurar el Service Worker
+
+Asegúrate de que el archivo 
+
+ngsw-config.json
+
+ esté presente en la raíz del proyecto.
+
+#### ngsw-config.json
+
+
+```json
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(png|jpg)"
+        ]
+      }
+    }
+  ]
+}
+```
+
+### 5. Instalar `@angular/service-worker`
+
+Instala el paquete `@angular/service-worker` utilizando npm con la opción `--legacy-peer-deps` para resolver conflictos de dependencias:
+
+```sh
+npm install @angular/service-worker --save --legacy-peer-deps
+```
+
+### 6. Configurar el Registro del Service Worker
+
+Asegúrate de que el `ServiceWorkerModule` esté registrado en tu archivo `main.ts`.
+
+#### main.ts
+
+
+```typescript
+import { bootstrapApplication } from '@angular/platform-browser';
+import { importProvidersFrom } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/ngsw-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+}
+
+bootstrapApplication(AppComponent, {
+  ...appConfig,
+  providers: [
+    ...appConfig.providers,
+    importProvidersFrom(HttpClientModule),
+    importProvidersFrom(ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }))
+  ]
+}).catch((err) => console.error(err));
+```
+
+### 7. Configurar angular.json
+
+
+Asegúrate de que 
+
+angular.json
+
+ esté configurado correctamente para permitir dependencias CommonJS y ajustar el presupuesto de tamaño.
+
+#### angular.json
+
+
+```json
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "LuceModa": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/luce-moda",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/public"
+              }
+            ],
+            "styles": [
+              "src/styles.css",
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css"
+            ],
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "core-js",
+              "raf",
+              "rgbcolor",
+              "qrcode"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "1.5MB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kB",
+                  "maximumError": "4kB"
+                }
+              ],
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "LuceModa:build:production"
+            },
+            "development": {
+              "buildTarget": "LuceModa:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/public"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}
+```
+
+### 8. Construir el Proyecto
+
+Finalmente, construye el proyecto para producción:
+
+```sh
+ng build --configuration production
+```
+
+## Notas Adicionales
+
+- Asegúrate de que todas las dependencias estén actualizadas y compatibles con la versión de Angular que estás utilizando.
+- Si encuentras problemas de dependencias, puedes utilizar la opción `--legacy-peer-deps` al instalar paquetes con npm.
+
+Con estos pasos, deberías poder construir el proyecto LuceModa de forma correcta y sin problemas. **¡Buena suerte!**
+
+### **[LuisEnGuerrero.Co](https://LuisEnGuerrero.netlify.app)**
+--------------
 
 
 # LuceModa
